@@ -3,7 +3,7 @@
 var gameOptions = {
   'height':450,
   'width': 700,
-  'nEnemies': 30,
+  'nEnemies': 9,
   'padding': 20
 };
 var gameStats = {
@@ -110,35 +110,32 @@ var randomizeLocs = function(){
   }
 }
 
+
+
 var changeEnemyLoc = function() {
   randomizeLocs()
   d3.select('svg').selectAll('.badGuys')
     .data(enemyLoc)
     .transition().duration(1000)
-    .attrTween("cx",function(d,i,a){
-
-      setInterval(function(){collisionChecker(i)},1);
-      return d3.interpolate(a,d['cx'])})
-    .attrTween("cy",function(d,i,a){
-      setInterval(function(){collisionChecker(i)},1);
-      return d3.interpolate(a,d['cy'])
-    })
-
+    .attr("cx", function(d) {return d['cx']})
+    .attr("cy", function(d) {return d['cy']})
 };
 
 setInterval(changeEnemyLoc,1000)
 
-var collisionChecker = function(i){
 
-  var goodPosX = d3.select('.goodGuy').attr('cx');
-  console.log("enemy" +":"+enemyLoc[i]['cx'] + "goodGuy"+goodPosX)
-  var goodPosY = d3.select('.goodGuy').attr('cy');
-  if((Math.abs(enemyLoc[i]['cx'] - goodPosX) < 5)){
-    alert("enemy" +":"+enemyLoc[i]['cx'] + "goodGuy"+goodPosX)
+var collisionChecker = function(enemy){
+
+  // var goodPosX = d3.select('.goodGuy').attr('cx');
+  // var goodPosY = d3.select('.goodGuy').attr('cy');
+  for (var i = 0; i < d3.selectAll('.badGuys').data(enemyLoc)[0].length; i++) {
+    if((Math.abs(d3.selectAll('.badGuys').data(enemyLoc)[0][i].cx.animVal.value - d3.select('.goodGuy').attr('cx')) < 20) && 
+       (Math.abs(d3.selectAll('.badGuys').data(enemyLoc)[0][i].cy.animVal.value - d3.select('.goodGuy').attr('cy')) < 20)){
+      console.log("hit");
+    }
   }
 };
 
-//setInterval(collisionChecker,10)
 
-
+setInterval(collisionChecker,10)
 
